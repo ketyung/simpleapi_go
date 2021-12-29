@@ -4,8 +4,6 @@ import (
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
-
-	"fmt"
 )
 
 func GetProducts(offset int, limit int) []Product {
@@ -23,9 +21,7 @@ func GetProducts(offset int, limit int) []Product {
 
 	defer db.Close()
 
-	sql := fmt.Sprint("SELECT * FROM product LIMIT ", offset, ",", limit)
-
-	results, err := db.Query(sql)
+	results, err := db.Query("SELECT * FROM product LIMIT ?,?", offset, limit)
 
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
