@@ -16,6 +16,8 @@ func main() {
 
 	router.GET("/product/:code", getProduct)
 
+	router.POST("/products", addProduct)
+
 	router.Run("localhost:8083")
 }
 
@@ -48,5 +50,9 @@ func getProduct(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, product)
 
 	}
+
+}
+
+func addProduct(c *gin.Context) {
 
 }
