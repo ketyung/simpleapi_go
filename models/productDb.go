@@ -8,11 +8,11 @@ import (
 	"fmt"
 )
 
-func GetProducts(offset int, limit int) []Product {
+const dbuser = "sample_erp_usr"
+const dbpass = "128272bnH627Ya3a"
+const dbname = "erp_sample_db"
 
-	dbuser := "sample_erp_usr"
-	dbpass := "128272bnH627Ya3a"
-	dbname := "erp_sample_db"
+func GetProducts() []Product {
 
 	db, err := sql.Open("mysql", dbuser+":"+dbpass+"@tcp(127.0.0.1:3306)/"+dbname)
 
@@ -27,7 +27,7 @@ func GetProducts(offset int, limit int) []Product {
 
 	defer db.Close()
 
-	results, err := db.Query("SELECT * FROM product LIMIT ?,?", offset, limit)
+	results, err := db.Query("SELECT * FROM product")
 
 	if err != nil {
 
@@ -55,5 +55,44 @@ func GetProducts(offset int, limit int) []Product {
 	}
 
 	return products
+
+}
+
+func GetProduct(code string) *Product {
+
+	db, err := sql.Open("mysql", dbuser+":"+dbpass+"@tcp(127.0.0.1:3306)/"+dbname)
+
+	prod := &Product{}
+
+	if err != nil {
+
+		// simply print the error to the console
+		fmt.Println("Err", err.Error())
+		// returns nil on error
+		return nil
+	}
+
+	results, err := db.Query("SELECT * FROM product where code=?", code)
+
+	if err != nil {
+
+		fmt.Println("Err", err.Error())
+
+		return nil
+	}
+
+	if results.Next() {
+
+		err = results.Scan(&prod.Code, &prod.Name, &prod.Qty, &prod.LastUpdated)
+
+		if err != nil {
+			return nil
+		}
+	} else {
+
+		return nil
+	}
+
+	return prod
 
 }

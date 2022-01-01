@@ -6,29 +6,22 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	"strconv"
 )
 
 func main() {
 
 	router := gin.Default()
 
-	router.GET("/products/:offset/:limit", getProducts)
+	router.GET("/products", getProducts)
+
+	router.GET("/product/:code", getProduct)
 
 	router.Run("localhost:8083")
 }
 
 func getProducts(c *gin.Context) {
 
-	offset := c.Param("offset")
-
-	limit := c.Param("limit")
-
-	offset_int, _ := strconv.Atoi(offset)
-	limit_int, _ := strconv.Atoi(limit)
-
-	products := models.GetProducts(offset_int, limit_int)
+	products := models.GetProducts()
 
 	if products == nil || len(products) == 0 {
 
@@ -37,6 +30,22 @@ func getProducts(c *gin.Context) {
 	} else {
 
 		c.IndentedJSON(http.StatusOK, products)
+
+	}
+}
+
+func getProduct(c *gin.Context) {
+
+	code := c.Param("code")
+
+	product := models.GetProduct(code)
+
+	if product == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+
+	} else {
+
+		c.IndentedJSON(http.StatusOK, product)
 
 	}
 
