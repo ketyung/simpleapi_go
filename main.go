@@ -28,5 +28,16 @@ func getProducts(c *gin.Context) {
 	offset_int, _ := strconv.Atoi(offset)
 	limit_int, _ := strconv.Atoi(limit)
 
-	c.IndentedJSON(http.StatusOK, models.GetProducts(offset_int, limit_int))
+	products := models.GetProducts(offset_int, limit_int)
+
+	if products == nil || len(products) == 0 {
+
+		c.AbortWithStatus(http.StatusNotFound)
+
+	} else {
+
+		c.IndentedJSON(http.StatusOK, products)
+
+	}
+
 }
