@@ -72,6 +72,8 @@ func GetProduct(code string) *Product {
 		return nil
 	}
 
+	defer db.Close()
+
 	results, err := db.Query("SELECT * FROM product where code=?", code)
 
 	if err != nil {
@@ -94,5 +96,41 @@ func GetProduct(code string) *Product {
 	}
 
 	return prod
+
+}
+
+func AddProduct(product Product) {
+
+	db, err := sql.Open("mysql", dbuser+":"+dbpass+"@tcp(127.0.0.1:3306)/"+dbname)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// defer the close till after this function has finished
+	// executing
+	defer db.Close()
+
+	insert, err := db.Query(
+		"INSERT INTO product (code,name,qty,last_updated) VALUES (?,?,?, now())",
+		product.Code, product.Name, product.Qty)
+
+	/*
+		// Or use fmt.Sprintf to concatenate SQL statement if prepared statement isn't worth here
+
+		sqlstm :=
+			fmt.Sprintf("INSERT INTO product (code,name,qty,last_updated)"+
+				" VALUES ('%s','%s',%d, now())",
+				product.Code, product.Name, product.Qty)
+
+		insert, err := db.Query(sqlstm)
+	*/
+
+	// if there is an error inserting, handle it
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer insert.Close()
 
 }

@@ -21,6 +21,13 @@ func main() {
 	router.Run("localhost:8083")
 }
 
+/*
+// curl command to get all products
+curl http://localhost:8083/products \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "GET"
+*/
 func getProducts(c *gin.Context) {
 
 	products := models.GetProducts()
@@ -36,6 +43,13 @@ func getProducts(c *gin.Context) {
 	}
 }
 
+/*
+// curl command to get a product by code
+curl http://localhost:8083/product/P0111 \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "GET"
+*/
 func getProduct(c *gin.Context) {
 
 	code := c.Param("code")
@@ -53,6 +67,25 @@ func getProduct(c *gin.Context) {
 
 }
 
+/*
+// e.g. curl command to test adding a new product
+curl http://localhost:8083/products \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "POST" \
+    --data '{"code": "P1114","name": "MacBook Air M1","qty": 10}'
+*/
 func addProduct(c *gin.Context) {
+
+	var prod models.Product
+
+	if err := c.BindJSON(&prod); err != nil {
+
+		c.AbortWithStatus(http.StatusBadRequest)
+	} else {
+
+		models.AddProduct(prod)
+		c.IndentedJSON(http.StatusCreated, prod)
+	}
 
 }
