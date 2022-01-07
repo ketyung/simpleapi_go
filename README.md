@@ -1,3 +1,7 @@
 # simpleapi_go
 
-Just a simple REST api using Go and Gin for leanring GO lang. The REST API retrieves data from MySQL DB 
+https://blog.techchee.com/build-a-rest-api-with-golang-gin-and-mysql/
+
+A tutorial on how to build a simple REST api using Go and Ging. The REST API saves and retrieves data to and from MySQL DB 
+
+Unlicened license
