@@ -46,7 +46,7 @@ func GetProducts() []Product {
 		err = results.Scan(&prod.Code, &prod.Name, &prod.Qty, &prod.LastUpdated)
 
 		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
+			panic(err.Error())
 		}
 
 		products = append(products, prod)
